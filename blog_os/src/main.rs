@@ -52,6 +52,9 @@ use core::panic::PanicInfo;
 extern crate spin;
 
 
+#[cfg(test)]
+extern crate array_init;
+
 
 
 /// This function is called on panic.
