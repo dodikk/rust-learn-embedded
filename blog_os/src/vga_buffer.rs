@@ -1,12 +1,9 @@
-// #![no_std]
-// #![no_main]
 
 
-//an `extern crate` loading macros must be at the crate root
+// silence code style enforcing
+// no other people on the team. no project support expected.
 //
-// #[macro_use]
-// extern crate lazy_static;
-
+#![allow(non_snake_case)]
 
 
 use core::fmt;

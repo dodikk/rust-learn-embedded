@@ -1,7 +1,28 @@
 
 #![no_std]
-#![no_main]
+
+
+// for unit testing
+//
+// // #![no_main]
+//
+//
+#![cfg_attr(not(test), no_main)] 
+
+// We get a few warnings about unused items, because we no longer compile our _start function.
+// Silencing them...
+//
+#![cfg_attr(test, allow(dead_code, unused_macros, unused_imports))]
+
+
 #![feature(panic_implementation)]
+
+
+// silence code style enforcing
+// no other people on the team. no project support expected.
+//
+#![allow(non_snake_case)]
+
 
 
 // error[E0468]: an `extern crate` loading macros must be at the crate root
@@ -13,7 +34,7 @@ extern crate lazy_static;
 
 #[macro_use]
 mod vga_buffer;
-use vga_buffer::{Writer};
+// use vga_buffer::{Writer};
 
 
 
@@ -25,18 +46,20 @@ use core::panic::PanicInfo;
 
 
 extern crate spin;
-use spin::Mutex;
+// use spin::Mutex;
 
 
-use core::fmt;
-use core::fmt::{Write};
+// use core::fmt;
+// use core::fmt::{Write};
 
 
 
 
 /// This function is called on panic.
+//
 #[panic_implementation]
 #[no_mangle]
+#[cfg(not(test))]
 pub fn panic(_info: &PanicInfo) -> ! 
 {
 	println!("{}", _info);
@@ -44,13 +67,7 @@ pub fn panic(_info: &PanicInfo) -> !
 }
 
 
-//======= Rust (Linux ??)
-//
-//
-// #[cfg(target_os = "linux")]
-//
-//
-
+/*
 static HELLO: &[u8] = b"Hello World!";
 
 fn print_abstractionless()
@@ -67,8 +84,9 @@ fn print_abstractionless()
     }
 
 }
+*/
 
-
+#[cfg(not(test))]
 #[no_mangle]
 pub extern "C" fn _start() -> ! 
 {
@@ -87,6 +105,11 @@ pub extern "C" fn _start() -> !
 }
 
 
+#[cfg(test)]
+pub fn _main()
+{
+	// IDLE
+}
 
 
 /*
