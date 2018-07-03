@@ -81,7 +81,7 @@ pub extern "C" fn _start() -> !
     write!(vga_buffer::WRITER.lock(), ", some numbers: {} {}", 42, 1.337).unwrap();
 
 
-    panic!("Test failure");
+    // panic!("Test failure");
 
     loop {}
 }
