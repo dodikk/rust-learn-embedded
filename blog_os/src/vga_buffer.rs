@@ -278,9 +278,11 @@ mod vga_buffer_logic_test
 {
     use super::*;
 
+
+
     fn construct_writer() -> Writer 
     {
-	    use std::boxed::Box;
+		use vga_buffer::std::boxed::Box;
 
 	    let blueOnMagenta = 
 	    ColorCode::new(
@@ -299,19 +301,16 @@ mod vga_buffer_logic_test
 
 	fn construct_buffer() -> Buffer 
 	{
+	    use array_init::array_init;
+
 	    Buffer 
 	    {
-	        chars: 
-	        [
-	        	[
-	        		Volatile::new(empty_char()); 
-	        		BUFFER_WIDTH
-	        	]; 
+	        chars: array_init(|_| array_init(|_| Volatile::new(empty_char()))),
 
-	        	BUFFER_HEIGHT
-	        ],
+
+            // chars: [[Volatile::new(empty_char()); BUFFER_WIDTH]; BUFFER_HEIGHT],
+
 	    }
-
 	} // fn construct_buffer()
 
 	fn empty_char() -> ScreenChar 
@@ -327,7 +326,7 @@ mod vga_buffer_logic_test
         	ascii_character: b' '        ,
         	color_code     : greenOnBrown,
  	    }
- 	    
+
 	} // fn empty_char()
 
     #[test]
