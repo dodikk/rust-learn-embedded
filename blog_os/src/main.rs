@@ -9,11 +9,14 @@
 //
 #![cfg_attr(not(test), no_main)] 
 
+
 // We get a few warnings about unused items, because we no longer compile our _start function.
 // Silencing them...
 //
 #![cfg_attr(test, allow(dead_code, unused_macros, unused_imports))]
 #![deny(warnings)]
+
+
 
 
 #![feature(panic_implementation)]
@@ -47,11 +50,6 @@ use core::panic::PanicInfo;
 
 
 extern crate spin;
-// use spin::Mutex;
-
-
-// use core::fmt;
-// use core::fmt::{Write};
 
 
 

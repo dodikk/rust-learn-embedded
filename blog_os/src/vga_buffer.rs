@@ -16,6 +16,13 @@ extern crate spin;
 use ::spin::Mutex;
 
 
+// for unit testing
+// allows standard library for asserts and other good things
+// (which are unavailable on bare metal)
+//
+#[cfg(test)]
+extern crate std;
+
 
 
 #[allow(dead_code)]
@@ -264,4 +271,69 @@ pub fn print(args: fmt::Arguments)
 //     write!(writer, "The numbers are {} and {}", 42, 1.0/3.0).unwrap();
 
 // }
+
+
+#[cfg(test)]
+mod vga_buffer_logic_test 
+{
+    use super::*;
+
+    fn construct_writer() -> Writer 
+    {
+	    use std::boxed::Box;
+
+	    let blueOnMagenta = 
+	    ColorCode::new(
+	    	Color::Blue   , 
+	    	Color::Magenta);
+
+        let buffer = construct_buffer();
+        Writer 
+        {
+            column_position: 0                          ,
+            color_code     : blueOnMagenta              ,
+            buffer         : Box::leak(Box::new(buffer)),
+        }
+
+    } // fn construct_writer()
+
+	fn construct_buffer() -> Buffer 
+	{
+	    Buffer 
+	    {
+	        chars: 
+	        [
+	        	[
+	        		Volatile::new(empty_char()); 
+	        		BUFFER_WIDTH
+	        	]; 
+
+	        	BUFFER_HEIGHT
+	        ],
+	    }
+
+	} // fn construct_buffer()
+
+	fn empty_char() -> ScreenChar 
+	{
+		let greenOnBrown = 
+			ColorCode::new(
+				Color::Green , 
+				Color::Brown );
+
+
+    	ScreenChar 
+    	{
+        	ascii_character: b' '        ,
+        	color_code     : greenOnBrown,
+ 	    }
+ 	    
+	} // fn empty_char()
+
+    #[test]
+    fn foo() 
+    {
+    	// idle
+    }
+}
 
