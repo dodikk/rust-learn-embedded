@@ -11,6 +11,9 @@
 #[macro_use]
 extern crate lazy_static;
 
+#[macro_use]
+mod vga_buffer;
+use vga_buffer::{Writer};
 
 
 
@@ -29,8 +32,6 @@ use core::fmt;
 use core::fmt::{Write};
 
 
-mod vga_buffer;
-use vga_buffer::{Writer};
 
 
 /// This function is called on panic.
@@ -38,6 +39,7 @@ use vga_buffer::{Writer};
 #[no_mangle]
 pub fn panic(_info: &PanicInfo) -> ! 
 {
+	println!("{}", _info);
     loop {}
 }
 
@@ -72,10 +74,14 @@ pub extern "C" fn _start() -> !
 {
 	// ::vga_buffer::print_something();
 
+	println!("Hello World{}", "!");
+
 	use core::fmt::Write;
     vga_buffer::WRITER.lock().write_str("Hello again").unwrap();
     write!(vga_buffer::WRITER.lock(), ", some numbers: {} {}", 42, 1.337).unwrap();
 
+
+    panic!("Test failure");
 
     loop {}
 }
