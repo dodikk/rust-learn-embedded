@@ -330,9 +330,48 @@ mod vga_buffer_logic_test
 	} // fn empty_char()
 
     #[test]
-    fn foo() 
+    fn write_byte() 
     {
-    	// idle
-    }
-}
+        let mut writer = construct_writer();
+        writer.write_byte(b'X');
+        writer.write_byte(b'Y');
+
+        for (i, row) in writer.buffer.chars.iter().enumerate() 
+        {
+            for (j, screen_char) in row.iter().enumerate() 
+            {
+                let screen_char = screen_char.read();
+                
+                let isFirstSymbolOfFirstTextLine: bool = 
+                	(i == BUFFER_HEIGHT - 1) 
+                 && (j == 0);
+
+                let isFirstSymbolOfSecondTextLine: bool = 
+                	(i == BUFFER_HEIGHT - 1)
+                 && (j == 1 );
+
+
+                if isFirstSymbolOfFirstTextLine
+                {
+                    assert_eq!(screen_char.ascii_character, b'X');
+                    assert_eq!(screen_char.color_code, writer.color_code);
+                } 
+                else if isFirstSymbolOfSecondTextLine
+                {
+                    assert_eq!(screen_char.ascii_character, b'Y');
+                    assert_eq!(screen_char.color_code, writer.color_code);
+                } 
+                else 
+                {
+                    assert_eq!(screen_char, empty_char());
+                }
+            
+            } // for -- column
+
+        } // for -- row
+    } // test -- fn write_byte() 
+
+} // mod tests
+
+
 
