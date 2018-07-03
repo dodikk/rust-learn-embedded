@@ -18,14 +18,23 @@ pub fn panic(_info: &PanicInfo) -> !
 //======= Rust (Linux ??)
 //
 //
+// #[cfg(target_os = "linux")]
+//
+//
 
-#[cfg(target_os = "linux")]
 #[no_mangle]
 pub extern "C" fn _start() -> ! 
 {
     loop {}
 }
 
+
+
+
+/*
+============== OS dependent trampoline ============== 
+==
+==
 
 
 //======= Mac OS
@@ -59,3 +68,8 @@ pub extern "C" fn main() -> !
     loop {}
 }
 
+
+==
+==
+==============[END] OS dependent trampoline [END]============== 
+*/
