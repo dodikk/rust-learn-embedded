@@ -3,4 +3,10 @@ name = "blog_os"
 version = "0.1.0"
 authors = ["Alexander Dodatko <alexander.dodatko@dataart.com>"]
 
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
 [dependencies]
