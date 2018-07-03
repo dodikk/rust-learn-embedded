@@ -13,6 +13,7 @@
 // Silencing them...
 //
 #![cfg_attr(test, allow(dead_code, unused_macros, unused_imports))]
+#![deny(warnings)]
 
 
 #![feature(panic_implementation)]

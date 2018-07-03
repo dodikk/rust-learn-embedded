@@ -5,6 +5,7 @@
 //
 #![allow(non_snake_case)]
 
+#![deny(warnings)]
 
 use core::fmt;
 
