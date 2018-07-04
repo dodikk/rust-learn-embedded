@@ -20,6 +20,7 @@
 
 
 #![feature(panic_implementation)]
+#![feature(abi_x86_interrupt)]
 
 
 // silence code style enforcing
@@ -50,12 +51,40 @@ use core::panic::PanicInfo;
 
 extern crate spin;
 extern crate uart_16550;
+
 extern crate x86_64;
+use x86_64::structures::idt::{InterruptDescriptorTable, ExceptionStackFrame};
+
 
 #[cfg(test)]
 extern crate array_init;
 
 
+lazy_static! 
+{
+    static ref IDT: InterruptDescriptorTable = 
+    {
+        let mut idt = InterruptDescriptorTable::new();
+
+        idt.breakpoint.set_handler_fn(breakpoint_handler);
+        idt
+    };
+}
+
+pub fn init_idt() 
+{
+    IDT.load();
+}
+
+
+extern "x86-interrupt" 
+fn breakpoint_handler(
+    stack_frame: &mut ExceptionStackFrame)
+{
+    println!(
+        "EXCEPTION: BREAKPOINT\n{:#?}"
+      , stack_frame);
+}
 
 /// This function is called on panic.
 //
@@ -113,9 +142,13 @@ fn print_abstractionless()
 #[no_mangle]
 pub extern "C" fn _start() -> ! 
 {
+    init_idt();
+
 	// ::vga_buffer::print_something();
 
 	println!("Hello World{}", "!");
+
+
 
 	use core::fmt::Write;
     vga_buffer::WRITER.lock().write_str("Hello again").unwrap();
@@ -123,6 +156,10 @@ pub extern "C" fn _start() -> !
 
 
     serial_println!("Hello Host{}", "!");
+
+
+    // invoke a breakpoint exception
+    x86_64::instructions::int3();
 
     // panic!("Test failure");
 
@@ -135,6 +172,9 @@ pub extern "C" fn _start() -> !
 #[no_mangle]
 pub extern "C" fn _start() -> ! 
 {
+    // ???
+    init_idt();
+
     // TODO: invoke some test methods
 
     unsafe { exit_qemu(); }
