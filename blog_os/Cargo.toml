@@ -10,6 +10,10 @@ panic = "abort"
 panic = "abort"
 
 
+[features]
+integration-test = []
+
+
 [package.metadata.bootimage]
 default-target = "x86_64-blog_os.json"
 

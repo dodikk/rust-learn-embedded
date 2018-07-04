@@ -61,15 +61,31 @@ extern crate array_init;
 //
 #[panic_implementation]
 #[no_mangle]
+#[cfg(not(feature = "integration-test"))]
 #[cfg(not(test))]
 pub fn panic(_info: &PanicInfo) -> ! 
 {
 	println!("{}", _info);
 
+    loop {}
+}
+
+
+/// This function is called on panic.
+//
+#[panic_implementation]
+#[no_mangle]
+#[cfg(feature = "integration-test")]
+#[cfg(not(test))]
+pub fn panic(_info: &PanicInfo) -> ! 
+{
+    serial_println!("{}", _info);
+
     unsafe { exit_qemu(); }
 
     loop {}
 }
+
 
 
 /*
@@ -91,6 +107,8 @@ fn print_abstractionless()
 }
 */
 
+
+#[cfg(not(feature = "integration-test"))]
 #[cfg(not(test))]
 #[no_mangle]
 pub extern "C" fn _start() -> ! 
@@ -106,12 +124,24 @@ pub extern "C" fn _start() -> !
 
     serial_println!("Hello Host{}", "!");
 
-    unsafe { exit_qemu(); }
-
     // panic!("Test failure");
 
     loop {}
 }
+
+
+#[cfg(feature = "integration-test")]
+#[cfg(not(test))]
+#[no_mangle]
+pub extern "C" fn _start() -> ! 
+{
+    // TODO: invoke some test methods
+
+    unsafe { exit_qemu(); }
+
+    loop {}
+}
+
 
 
 #[cfg(test)]
