@@ -1,3 +1,18 @@
 bootimage build
 bootimage run
 cargo test
+
+
+bootimage run -- -serial mon:stdio
+
+
+bootimage run -- \
+-serial file:output-file.txt \
+-device isa-debug-exit,iobase=0xf4,iosize=0x04
+
+
+
+bootimage run -- \
+-serial mon:stdio \
+-device isa-debug-exit,iobase=0xf4,iosize=0x04 \
+-display none

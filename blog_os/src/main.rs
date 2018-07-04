@@ -38,10 +38,9 @@ extern crate lazy_static;
 
 #[macro_use]
 mod vga_buffer;
-// use vga_buffer::{Writer};
 
-
-
+#[macro_use]
+mod serial;
 
 
 
@@ -50,7 +49,8 @@ use core::panic::PanicInfo;
 
 
 extern crate spin;
-
+extern crate uart_16550;
+extern crate x86_64;
 
 #[cfg(test)]
 extern crate array_init;
@@ -65,6 +65,9 @@ extern crate array_init;
 pub fn panic(_info: &PanicInfo) -> ! 
 {
 	println!("{}", _info);
+
+    unsafe { exit_qemu(); }
+
     loop {}
 }
 
@@ -100,6 +103,10 @@ pub extern "C" fn _start() -> !
     vga_buffer::WRITER.lock().write_str("Hello again").unwrap();
     write!(vga_buffer::WRITER.lock(), ", some numbers: {} {}", 42, 1.337).unwrap();
 
+
+    serial_println!("Hello Host{}", "!");
+
+    unsafe { exit_qemu(); }
 
     // panic!("Test failure");
 
