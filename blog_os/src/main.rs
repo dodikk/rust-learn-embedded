@@ -66,7 +66,9 @@ lazy_static!
     {
         let mut idt = InterruptDescriptorTable::new();
 
-        idt.breakpoint.set_handler_fn(breakpoint_handler);
+        idt.breakpoint  .set_handler_fn(breakpoint_handler  );
+        idt.double_fault.set_handler_fn(double_fault_handler);
+
         idt
     };
 }
@@ -82,8 +84,21 @@ fn breakpoint_handler(
     stack_frame: &mut ExceptionStackFrame)
 {
     println!(
-        "EXCEPTION: BREAKPOINT\n{:#?}"
-      , stack_frame);
+          "EXCEPTION: BREAKPOINT\n{:#?}"
+        , stack_frame);
+}
+
+// new
+extern "x86-interrupt" 
+fn double_fault_handler(
+    stack_frame: &mut ExceptionStackFrame, 
+    _error_code: u64)
+{
+    println!(
+          "EXCEPTION: DOUBLE FAULT\n{:#?}"
+        , stack_frame);
+
+    loop {}
 }
 
 /// This function is called on panic.
@@ -137,6 +152,15 @@ fn print_abstractionless()
 */
 
 
+fn generate_page_fault_for_demo()
+{
+    // trigger a page fault
+    unsafe 
+    {
+        *(0xdeadbeaf as *mut u64) = 42;
+    };
+}
+
 #[cfg(not(feature = "integration-test"))]
 #[cfg(not(test))]
 #[no_mangle]
@@ -160,6 +184,11 @@ pub extern "C" fn _start() -> !
 
     // invoke a breakpoint exception
     x86_64::instructions::int3();
+    println!("[breakpoint] It did not crash!");
+
+
+    generate_page_fault_for_demo();
+    println!("[double fault] It did not crash!");
 
     // panic!("Test failure");
 
