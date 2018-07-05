@@ -5,6 +5,14 @@
 #![cfg_attr(test, allow(dead_code, unused_macros, unused_imports))]
 
 
+#![deny(warnings)]
+
+
+// silence code style enforcing
+// no other people on the team. no project support expected.
+//
+#![allow(non_snake_case)]
+
 
 #[macro_use]
 extern crate blog_os;
@@ -77,14 +85,15 @@ pub fn panic(info: &PanicInfo) -> !
     loop {}
 }
 
-use x86_64::structures::idt::{ExceptionStackFrame, Idt};
+use x86_64::structures::idt::{ExceptionStackFrame, InterruptDescriptorTable};
 
 lazy_static! 
 {
-    static ref IDT: Idt = 
+    static ref IDT: InterruptDescriptorTable = 
     {
-        let mut idt = Idt::new();
+        let mut idt = InterruptDescriptorTable::new();
         idt.breakpoint.set_handler_fn(breakpoint_handler);
+        
         idt
     };
 }
